@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import TitleBar from "../components/layout/TitleBar";
-import Sidebar from "../components/layout/Sidebar";
+import "../../app/globals.css";
+import TitleBar from "../../components/layout/TitleBar";
+import Sidebar from "../../components/layout/Sidebar";
 
 export const metadata: Metadata = {
   title: "CPP",
   description: "Communication Platform for Programmers",
 };
 
-export default function RootLayout({
+export default function PagesLayout({
   children,
 }: {
   children: React.ReactNode;
