@@ -18,7 +18,7 @@ export default function NavItem({
     <li>
       <Link
         href={url}
-        className="flex items-center gap-1 p-3 duration-300 hover:bg-zinc-800  py-1 rounded-md"
+        className="flex items-center gap-1 p-3 duration-300 hover:bg-zinc-800 focus-within:bg-zinc-800 transition-colors py-1 rounded-md"
       >
         <Icon className="w-5 h-5 text-zinc-300" />
         {isOpen && <span className="text-zinc-300 p-2 text-sm ">{label}</span>}
