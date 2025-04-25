@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:3001", // permite só seu frontend
+    origin: "http://localhost:3000", // permite só seu frontend
     credentials: true, // permite envio de cookies, headers etc.
   })
 );

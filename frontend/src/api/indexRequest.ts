@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PORT = 3000;
+const PORT = 8000;
 
 const api = axios.create({
   baseURL: `http://localhost:${PORT}/api`, // URL do seu backend em Node

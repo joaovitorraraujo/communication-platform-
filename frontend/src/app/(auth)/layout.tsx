@@ -13,9 +13,13 @@ export default function AuthLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-zinc-950 text-zinc-50">
-        <main className="min-h-screen flex items-center justify-center h-screen p-4">
-          {children}
+      <body className="text-zinc-50 h-screen">
+        <main
+          className="relative min-h-screen flex items-center justify-center h-screen p-4 bg-cover bg-center"
+          style={{ backgroundImage: "url('/bg-login.jpg')" }}
+        >
+          <div className="absolute inset-0 bg-black/50 z-0" />
+          <div className="relative z-10">{children}</div>
         </main>
       </body>
     </html>

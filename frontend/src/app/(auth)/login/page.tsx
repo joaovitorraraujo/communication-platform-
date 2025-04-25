@@ -4,6 +4,7 @@ import { Mail, Lock } from "lucide-react";
 import { login } from "@/api/authRequest";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-zinc-900 p-6 rounded-sm flex flex-col items-center justify-center shadow-2xl shadow-zinc-800">
+    <div className="bg-zinc-950/70 p-6 rounded-sm flex flex-col items-center justify-center shadow-2xl shadow-zinc-950">
       <div className="text-2xl mb-4 w-full border-b-1 border-zinc-600 pb-4 flex items-center justify-center">
         Sign In
       </div>
@@ -70,6 +71,9 @@ export default function LoginPage() {
           Sign In
         </button>
       </form>
+      <Link href={"/register"} className="text-zinc-300 mt-4">
+        Don’t have account? Sign Up
+      </Link>
     </div>
   );
 }
