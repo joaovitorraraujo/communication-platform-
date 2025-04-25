@@ -1,4 +1,4 @@
-import express, { Request, Response, Express } from "express";
+import express, { Express } from "express";
 import { PORT } from "./secrets";
 import rootRouter from "./routes";
 import { PrismaClient } from "@prisma/client";
@@ -14,5 +14,5 @@ export const prismaClient = new PrismaClient({
 });
 
 app.listen(PORT, () => {
-  console.log("server running on port 3000!");
+  console.log("server running on port 8000!");
 });

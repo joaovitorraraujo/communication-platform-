@@ -1,12 +1,34 @@
+"use client";
+
 import { Mail, Lock } from "lucide-react";
+import { login } from "@/api/authRequest";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      await login(email, password);
+      router.push("/"); // redireciona após login
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erro ao fazer login");
+    }
+  };
+
   return (
     <div className="bg-zinc-900 p-6 rounded-sm flex flex-col items-center justify-center shadow-2xl shadow-zinc-800">
       <div className="text-2xl mb-4 w-full border-b-1 border-zinc-600 pb-4 flex items-center justify-center">
         Sign In
       </div>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleLogin} className="flex flex-col gap-4">
         <label className="text-lg" htmlFor="email">
           Email
         </label>
@@ -17,6 +39,8 @@ export default function LoginPage() {
             className="p-2 outline-none bg-transparent text-white"
             type="email"
             name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             id="email"
           />
         </div>
@@ -30,6 +54,8 @@ export default function LoginPage() {
             className="p-2 outline-none bg-transparent text-white"
             type="password"
             name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             id="password"
           />
         </div>

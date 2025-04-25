@@ -46,4 +46,6 @@ export const signIn = async (req: Request, res: Response) => {
   if (!compareSync(password, user.password)) {
     throw new Error("Invalid password");
   }
+
+  res.json({ message: "success" });
 };
