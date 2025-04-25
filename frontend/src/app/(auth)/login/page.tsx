@@ -62,6 +62,7 @@ export default function LoginPage() {
 
         <div className="flex items-center justify-end">Forgot Password?</div>
 
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           className="rounded-sm p-4 text-zinc-900 font-semibold bg-zinc-100"
           type="submit"
