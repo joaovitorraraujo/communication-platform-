@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -40,6 +41,7 @@ export default function LoginPage() {
             className="p-2 outline-none bg-transparent text-white"
             type="email"
             name="email"
+            placeholder="user@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             id="email"
@@ -55,6 +57,7 @@ export default function LoginPage() {
             className="p-2 outline-none bg-transparent text-white"
             type="password"
             name="password"
+            placeholder="**********"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             id="password"

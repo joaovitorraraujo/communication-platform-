@@ -61,39 +61,45 @@ export default function LoginPage() {
           />
         </div>
 
-        <label className="text-lg" htmlFor="email">
-          Email *
-        </label>
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          <div className="flex flex-col">
+            <label className="text-lg" htmlFor="email">
+              Email *
+            </label>
 
-        <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
-          <Mail className="w-6 h-6 ml-2" />
-          <input
-            placeholder="joao@email.com"
-            required
-            className="p-2 outline-none bg-transparent text-white"
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            id="email"
-          />
-        </div>
+            <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
+              <Mail className="w-6 h-6 ml-2" />
+              <input
+                placeholder="joao@email.com"
+                required
+                className="p-2 outline-none bg-transparent text-white"
+                type="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                id="email"
+              />
+            </div>
+          </div>
 
-        <label className="text-lg" htmlFor="password">
-          Password *
-        </label>
-        <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
-          <Lock className="w-6 h-6 ml-2" />
-          <input
-            placeholder="************"
-            required
-            className="p-2 outline-none bg-transparent text-white"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            id="password"
-          />
+          <div className="flex flex-col">
+            <label className="text-lg" htmlFor="password">
+              Password *
+            </label>
+            <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
+              <Lock className="w-6 h-6 ml-2" />
+              <input
+                placeholder="************"
+                required
+                className="p-2 outline-none bg-transparent text-white"
+                type="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                id="password"
+              />
+            </div>
+          </div>
         </div>
 
         <label className="text-lg" htmlFor="cpf">
