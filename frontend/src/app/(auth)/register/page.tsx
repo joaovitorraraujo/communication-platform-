@@ -41,7 +41,7 @@ export default function LoginPage() {
 
       <form
         onSubmit={handleRegister}
-        className="max-h-[400px] md:max-h-full overflow-y-auto md:overflow-visible w-full flex flex-col gap-4"
+        className="max-h-[400px] md:max-h-[500px] scrollbar-thin overflow-y-auto w-full flex flex-col gap-4"
       >
         <label className="text-lg" htmlFor="name">
           Name *
