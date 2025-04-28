@@ -143,7 +143,7 @@ export default function LoginPage() {
           className="rounded-sm p-4 text-zinc-900 font-semibold bg-zinc-100"
           type="submit"
         >
-          Sign In
+          Sign Up
         </button>
       </form>
       <Link href={"/login"} className="text-zinc-300 mt-4">

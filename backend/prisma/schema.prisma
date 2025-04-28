@@ -8,12 +8,70 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  cpf      String @unique
-  birth    String 
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  cpf         String?   @unique // cpf é opcional, usado só para PF
+  birth       String?   // nascimento para PF
+
+  companyName String?   // nome da empresa, para PJ
+  cnpj        String?   @unique // CNPJ para PJ
+  companyPhone String?  // telefone da empresa
+  sectors     String?   // setores de atuação da empresa
+
+  address     Address?  @relation(fields: [addressId], references: [id])
+  addressId   Int? @unique
+
+  type        UserType  // PF ou PJ
+
+  teams       TeamMember[]
 
   @@map("users")
+}
+
+model Team {
+  id          Int           @id @default(autoincrement())
+  name        String @unique
+  description String?
+  code String @unique
+
+
+  members     TeamMember[]
+  
+  @@map("teams")
+}
+
+model TeamMember {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  teamId  Int
+
+  user    User   @relation(fields: [userId], references: [id])
+  team    Team   @relation(fields: [teamId], references: [id])
+
+  role    String // exemplo: "owner", "member"
+
+  @@unique([userId, teamId]) // não deixar o mesmo user entrar 2x no mesmo time
+  @@map("team_members")
+}
+
+model Address {
+  id          Int      @id @default(autoincrement())
+  cep         String
+  street      String
+  city        String
+  state       String
+  number      String
+  complement  String?
+  country     String
+
+  user        User?
+  
+  @@map("addresses")
+}
+
+enum UserType {
+  PF
+  PJ
 }

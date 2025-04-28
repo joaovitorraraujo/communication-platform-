@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { TeamType } from "@/types/teamType";
+import { Suspense } from "react";
 
-export default function Card() {
+export default function Card({ team }: { team: TeamType }) {
   return (
     <Link
       href={"/teams/chat"}
@@ -10,7 +12,7 @@ export default function Card() {
         <div className="bg-zinc-300 rounded-lg h-16 w-16 flex items-center justify-center">
           <p className="text-zinc-800 font-bold text-3xl">EC</p>
         </div>
-        <p className="text-zinc-300 font-medium">Equipe CESMAC</p>
+        <p className="text-zinc-300 font-medium">{team.name}</p>
       </div>
     </Link>
   );

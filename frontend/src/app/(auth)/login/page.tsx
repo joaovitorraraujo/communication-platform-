@@ -3,7 +3,7 @@
 import { Mail, Lock } from "lucide-react";
 import { login } from "@/api/authRequest";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -12,6 +12,15 @@ export default function LoginPage() {
 
   const [error, setError] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    // Verificar se o token está presente no localStorage
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      localStorage.removeItem("token");
+    }
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

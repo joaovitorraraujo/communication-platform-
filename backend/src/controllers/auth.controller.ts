@@ -2,6 +2,8 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { prismaClient } from "../lib/prisma";
 import { hashSync, compareSync } from "bcrypt";
 import { usersType } from "../models/users";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../secrets";
 
 export const signUpController: RequestHandler = async (
   req: Request,
@@ -11,27 +13,29 @@ export const signUpController: RequestHandler = async (
   try {
     const { email, password, name, cpf, birth }: usersType = req.body;
 
-    let user = await prismaClient.user.findFirst({
+    let existingUser = await prismaClient.user.findUnique({
       where: {
         email: email,
       },
     });
 
-    if (user) {
-      res.json({ message: "User already exists" });
+    if (existingUser) {
+      res.status(409).json({ message: "User already exists" });
+      return;
     }
 
-    user = await prismaClient.user.create({
+    existingUser = await prismaClient.user.create({
       data: {
         name,
         email,
         password: hashSync(password, 10),
         cpf,
         birth,
+        type: "PF",
       },
     });
 
-    res.status(201).json(user);
+    res.status(201).json(existingUser);
   } catch (error) {
     next(error);
   }
@@ -45,17 +49,26 @@ export const signInController: RequestHandler = async (
   try {
     const { email, password }: usersType = req.body;
 
-    const user = await prismaClient.user.findFirst({ where: { email } });
-    if (!user) {
+    const existingUser = await prismaClient.user.findUnique({
+      where: { email },
+    });
+    if (!existingUser) {
       res.status(404).json({ message: "User not found" });
+      return;
     }
 
-    const isValid = compareSync(password, user!.password);
+    const isValid = compareSync(password, existingUser!.password);
+
     if (!isValid) {
       res.status(401).json({ message: "Invalid password" });
+      return;
     }
 
-    res.status(200).json(user);
+    const token = jwt.sign({ id: existingUser.id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.status(200).json({ existingUser, token });
   } catch (error) {
     next(error);
   }

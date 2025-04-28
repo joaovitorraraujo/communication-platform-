@@ -4,4 +4,5 @@ export type usersType = {
   password: string;
   cpf: string;
   birth: string;
+  type: string;
 };
