@@ -13,9 +13,9 @@ export const signUpController: RequestHandler = async (
   try {
     const { email, password, name, cpf, birth }: usersType = req.body;
 
-    let existingUser = await prismaClient.user.findUnique({
+    let existingUser = await prismaClient.user.findFirst({
       where: {
-        email: email,
+        OR: [{ email: email }, { cpf: cpf }],
       },
     });
 
@@ -35,7 +35,11 @@ export const signUpController: RequestHandler = async (
       },
     });
 
-    res.status(201).json(existingUser);
+    const token = jwt.sign({ id: existingUser.id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.status(201).json({ existingUser, token });
   } catch (error) {
     next(error);
   }

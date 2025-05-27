@@ -1,6 +1,6 @@
 import api from "./indexRequest";
 
-export const login = async (email: string, password: string) => {
+export const loginAPI = async (email: string, password: string) => {
   const res = await api.post("/auth/signIn", { email, password });
 
   const token = res.data.token;
@@ -9,7 +9,7 @@ export const login = async (email: string, password: string) => {
   return res.data;
 };
 
-export const register = async (
+export const registerAPI = async (
   name: string,
   email: string,
   password: string,
@@ -23,5 +23,9 @@ export const register = async (
     cpf,
     birth,
   });
+
+  const token = res.data.token;
+  localStorage.setItem("token", token);
+
   return res.data;
 };
