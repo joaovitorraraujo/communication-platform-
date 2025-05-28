@@ -4,16 +4,18 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 // IMPORTS DO REACT HOOK FORM
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { DatePicker } from "@/components/ui/date-picker";
+import { error } from "console";
 
 const formSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(3),
   cpf: z.string(),
-  birth: z.coerce.date(),
+  birth: z.coerce.date().min(new Date("1900-01-01")).max(new Date()),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -22,6 +24,7 @@ export default function FormInputs() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -124,17 +127,13 @@ export default function FormInputs() {
       <label className="text-lg" htmlFor="birth">
         Date of birth *
       </label>
-      <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
-        <Calendar className="w-6 h-6 ml-2" />
-        <input
-          placeholder="12/12/2000"
-          required
-          className="p-2 outline-none bg-transparent text-white"
-          type="date"
-          {...register("birth")}
-          id="birth"
-        />
-      </div>
+      <Controller
+        name="birth"
+        control={control}
+        render={({ field }) => (
+          <DatePicker value={field.value} onChange={field.onChange} />
+        )}
+      />
 
       <div className="flex items-center justify-end">Forgot Password?</div>
 
