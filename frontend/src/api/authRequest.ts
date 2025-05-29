@@ -1,10 +1,14 @@
+// import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 import api from "./indexRequest";
+import { redirect } from "next/dist/server/api-utils";
 
 export const loginAPI = async (email: string, password: string) => {
   const res = await api.post("/auth/signIn", { email, password });
 
   const token = res.data.token;
-  localStorage.setItem("token", token);
+
+  Cookies.set("token", token);
 
   return res.data;
 };
@@ -25,7 +29,11 @@ export const registerAPI = async (
   });
 
   const token = res.data.token;
-  localStorage.setItem("token", token);
+  Cookies.set("token", token);
 
   return res.data;
+};
+
+export const signOutAPI = async () => {
+  Cookies.remove("token");
 };
