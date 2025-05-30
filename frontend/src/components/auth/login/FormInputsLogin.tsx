@@ -9,8 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(3),
+  email: z.string().email({
+    message: "Invalid email",
+  }),
+  password: z.string().min(3, {
+    message: "Password must be at least 3 characters",
+  }),
 });
 
 type FormData = z.infer<typeof formSchema>;

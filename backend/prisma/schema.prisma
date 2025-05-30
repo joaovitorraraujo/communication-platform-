@@ -50,7 +50,7 @@ model TeamMember {
   user    User   @relation(fields: [userId], references: [id])
   team    Team   @relation(fields: [teamId], references: [id])
 
-  role    String // exemplo: "owner", "member"
+  role    UserRole // exemplo: "owner", "member"
 
   @@unique([userId, teamId]) // não deixar o mesmo user entrar 2x no mesmo time
   @@map("team_members")
@@ -74,4 +74,10 @@ model Address {
 enum UserType {
   PF
   PJ
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
 }

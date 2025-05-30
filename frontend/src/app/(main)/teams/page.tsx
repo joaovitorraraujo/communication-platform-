@@ -1,10 +1,10 @@
 "use client";
 
-import { LucidePlusSquare } from "lucide-react";
 import Card from "./components/TeamCard";
 import { TeamType } from "../../../types/teamType";
 import { useEffect, useState } from "react";
 import { getTeams } from "@/api/userRequest";
+import CreateServerButton from "@/components/main/teams/CreateSeverButton";
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<TeamType[]>([]);
@@ -28,15 +28,21 @@ export default function TeamsPage() {
         <h2 className="text-zinc-300 text-2xl md:text-4xl font-semibold">
           Teams
         </h2>
-        <div className="border border-zinc-400 ml-auto flex gap-2 items-center p-2 rounded-sm">
+        <CreateServerButton />
+        {/* <div className="border border-zinc-400 ml-auto flex gap-2 items-center p-2 rounded-sm">
           <LucidePlusSquare className="w-6 h-6 hidden sm:block" />
           <span className="text-sm md:text-base">Create or join a team</span>
-        </div>
+        </div> */}
       </div>
+      {teams.length === 0 && (
+        <div className="flex flex-col items-center justify-center h-full gap-3">
+          <h3 className="text-zinc-300 text-5xl">
+            It seems you are not on any team yet
+          </h3>
+          <p className="text-zinc-300/70 text-2xl">Join or create a team now</p>
+        </div>
+      )}
       <div className="scroll grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 p-4 ">
-        {teams.length === 0 && (
-          <p className="text-zinc-300 text-5xl">No teams found</p>
-        )}
         {teams.map((team) => (
           <div key={team.id} className="flex justify-center">
             <Card team={team} /> {/* passando o time para o Card */}

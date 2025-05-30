@@ -32,7 +32,7 @@ export const createTeamController: RequestHandler = async (
         members: {
           create: {
             userId: user!.id,
-            role: "owner",
+            role: "OWNER",
           },
         },
       },
@@ -79,7 +79,7 @@ export const joinTeamByCodeController: RequestHandler = async (
       data: {
         userId,
         teamId: team.id,
-        role: "member",
+        role: "MEMBER",
       },
     });
 
