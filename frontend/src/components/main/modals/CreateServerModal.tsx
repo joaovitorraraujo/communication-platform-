@@ -59,6 +59,9 @@ export function CreateServerModal({
   const onSubmit = async (data: FormData) => {
     try {
       await createTeamAPI(data.name, data.description);
+      onOpenChange(false);
+      form.reset();
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
