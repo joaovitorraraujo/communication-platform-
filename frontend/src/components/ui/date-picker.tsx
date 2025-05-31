@@ -5,6 +5,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { CustomCaption } from "../auth/register/CustomCaption";
 import {
   Popover,
   PopoverContent,
@@ -35,7 +36,23 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
           mode="single"
           selected={value}
           onSelect={onChange}
-          initialFocus
+          components={{
+            Caption: (props) => (
+              <CustomCaption
+                displayMonth={props.displayMonth}
+                onChangeMonth={(month: number) => {
+                  const newDate = new Date(props.displayMonth);
+                  newDate.setMonth(month);
+                  props.goToMonth(newDate);
+                }}
+                onChangeYear={(year) => {
+                  const newDate = new Date(props.displayMonth);
+                  newDate.setFullYear(year);
+                  props.goToMonth(newDate);
+                }}
+              />
+            ),
+          }}
         />
       </PopoverContent>
     </Popover>
