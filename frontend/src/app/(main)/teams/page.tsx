@@ -15,7 +15,7 @@ export default function TeamsPage() {
       setIsLoading(true);
       try {
         const data = await getTeams();
-        setTeams(data.teams); // supondo que sua API retorna { teams: [...] }
+        setTeams(data.teams);
       } catch (error) {
         console.error("Erro ao buscar teams", error);
       } finally {

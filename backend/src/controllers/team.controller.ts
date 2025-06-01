@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { prismaClient } from "../lib/prisma";
 import { teamsType } from "../models/teams";
+import { UserRole } from "@prisma/client";
 
 // Criar equipe
 export const createTeamController: RequestHandler = async (
@@ -32,7 +33,7 @@ export const createTeamController: RequestHandler = async (
         members: {
           create: {
             userId: user!.id,
-            role: "OWNER",
+            role: UserRole.OWNER,
           },
         },
       },

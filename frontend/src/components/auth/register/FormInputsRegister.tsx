@@ -2,7 +2,6 @@ import { Mail, Lock, User, DockIcon, Calendar } from "lucide-react";
 import { registerAPI } from "@/api/authRequest";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { cpf } from "cpf-cnpj-validator";
 
 // IMPORTS DO REACT HOOK FORM
 import { useForm, Controller } from "react-hook-form";
@@ -12,13 +11,17 @@ import { DatePicker } from "@/components/ui/date-picker";
 
 const formSchema = z.object({
   name: z.string().min(3),
-  email: z.string().email(),
+  email: z.string().email({
+    message: "Invalid email",
+  }),
   password: z.string().min(3),
-  cpf: z
-    .string()
-    .min(14, { message: "CPF inválido" })
-    .refine((value) => cpf.isValid(value), { message: "CPF inválido" }),
-  birth: z.coerce.date().min(new Date("1900-01-01")).max(new Date()),
+  cpf: z.string().min(14, { message: "CPF inválido" }),
+  birth: z.coerce
+    .date()
+    .min(new Date("1900-01-01"), { message: "Data muito antiga" })
+    .refine((date) => date <= new Date(), {
+      message: "A data de nascimento não pode ser no futuro",
+    }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -28,6 +31,7 @@ export default function FormInputs() {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -37,17 +41,12 @@ export default function FormInputs() {
   const router = useRouter();
 
   function formatCPF(value: string) {
-    value = value.replace(/\D/g, ""); // Remove tudo que não for número
+    value = value.replace(/\D/g, "").slice(0, 11); // Mantém só os 11 dígitos
 
-    if (value.length <= 3) {
-      return value;
-    }
-    if (value.length <= 6) {
-      return `${value.slice(0, 3)}.${value.slice(3)}`;
-    }
-    if (value.length <= 9) {
+    if (value.length <= 3) return value;
+    if (value.length <= 6) return `${value.slice(0, 3)}.${value.slice(3)}`;
+    if (value.length <= 9)
       return `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
-    }
     return `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(
       6,
       9
@@ -110,6 +109,9 @@ export default function FormInputs() {
               id="email"
             />
           </div>
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="flex flex-col">
@@ -143,11 +145,16 @@ export default function FormInputs() {
           type="text"
           {...register("cpf", {
             onChange: (e) => {
-              e.target.value = formatCPF(e.target.value);
+              const formattedValue = formatCPF(e.target.value);
+              setValue("cpf", formattedValue);
             },
           })}
         />
       </div>
+
+      {errors.cpf && (
+        <p className="text-red-500 text-sm">{errors.cpf.message}</p>
+      )}
 
       <label className="text-lg" htmlFor="birth">
         Date of birth *
@@ -159,6 +166,10 @@ export default function FormInputs() {
           <DatePicker value={field.value} onChange={field.onChange} />
         )}
       />
+
+      {errors.birth && (
+        <p className="text-red-500 text-sm">{errors.birth.message}</p>
+      )}
 
       <div className="flex items-center justify-end">Forgot Password?</div>
 
