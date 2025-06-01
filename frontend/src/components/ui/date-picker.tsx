@@ -1,23 +1,71 @@
 import * as React from "react";
-import { format } from "date-fns";
+import { format, getMonth, getYear, setMonth, setYear } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CustomCaption } from "../auth/register/CustomCaption";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 type DatePickerProps = {
   value?: Date;
   onChange?: (date: Date | undefined) => void;
+  startYear?: number;
+  endYear?: number;
 };
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({
+  value,
+  onChange,
+  startYear = getYear(new Date()) - 100,
+  endYear = getYear(new Date()) + 100,
+}: DatePickerProps) {
+  const [date, setDate] = React.useState<Date>(new Date());
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const years = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+  );
+
+  const handleMonthChange = (month: string) => {
+    const newDate = setMonth(date, months.indexOf(month));
+
+    setDate(newDate);
+  };
+
+  const handleYearChange = (year: string) => {
+    const newDate = setYear(date, parseInt(year));
+
+    setDate(newDate);
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -32,27 +80,48 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
+        {/* select year and month */}
+        <div className="p-2 flex justify-between">
+          <Select
+            onValueChange={handleMonthChange}
+            value={months[getMonth(date)]}
+          >
+            <SelectTrigger className="w-[110px]">
+              <SelectValue placeholder="Month" />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((month) => (
+                <SelectItem key={month} value={month}>
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            onValueChange={handleYearChange}
+            value={getYear(date).toString()}
+          >
+            <SelectTrigger className="w-[110px]">
+              <SelectValue placeholder="Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem key={year} value={year.toString()}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <Calendar
           mode="single"
           selected={value}
           onSelect={onChange}
-          components={{
-            Caption: (props) => (
-              <CustomCaption
-                displayMonth={props.displayMonth}
-                onChangeMonth={(month: number) => {
-                  const newDate = new Date(props.displayMonth);
-                  newDate.setMonth(month);
-                  props.goToMonth(newDate);
-                }}
-                onChangeYear={(year) => {
-                  const newDate = new Date(props.displayMonth);
-                  newDate.setFullYear(year);
-                  props.goToMonth(newDate);
-                }}
-              />
-            ),
-          }}
+          initialFocus
+          month={date}
+          onMonthChange={setDate}
         />
       </PopoverContent>
     </Popover>

@@ -2,19 +2,22 @@ import { Mail, Lock, User, DockIcon, Calendar } from "lucide-react";
 import { registerAPI } from "@/api/authRequest";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { cpf } from "cpf-cnpj-validator";
 
 // IMPORTS DO REACT HOOK FORM
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { DatePicker } from "@/components/ui/date-picker";
-import { error } from "console";
 
 const formSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(3),
-  cpf: z.string(),
+  cpf: z
+    .string()
+    .min(14, { message: "CPF inválido" })
+    .refine((value) => cpf.isValid(value), { message: "CPF inválido" }),
   birth: z.coerce.date().min(new Date("1900-01-01")).max(new Date()),
 });
 
@@ -32,6 +35,24 @@ export default function FormInputs() {
 
   const [error, setError] = useState("");
   const router = useRouter();
+
+  function formatCPF(value: string) {
+    value = value.replace(/\D/g, ""); // Remove tudo que não for número
+
+    if (value.length <= 3) {
+      return value;
+    }
+    if (value.length <= 6) {
+      return `${value.slice(0, 3)}.${value.slice(3)}`;
+    }
+    if (value.length <= 9) {
+      return `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
+    }
+    return `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(
+      6,
+      9
+    )}-${value.slice(9, 11)}`;
+  }
 
   const handleRegister = async (data: FormData) => {
     const dateBirth = data.birth.toISOString().split("T")[0];
@@ -114,13 +135,17 @@ export default function FormInputs() {
       </label>
       <div className="border-2 rounded-sm border-zinc-700 flex items-center focus-within:border-zinc-400 transition-colors">
         <DockIcon className="w-6 h-6 ml-2" />
+
         <input
-          placeholder="123.123.123-00"
+          placeholder="123.456.789-00"
           required
           className="p-2 outline-none bg-transparent text-white"
-          type="cpf"
-          {...register("cpf")}
-          id="cpf"
+          type="text"
+          {...register("cpf", {
+            onChange: (e) => {
+              e.target.value = formatCPF(e.target.value);
+            },
+          })}
         />
       </div>
 
