@@ -36,6 +36,17 @@ export const createTeamController: RequestHandler = async (
             role: UserRole.OWNER,
           },
         },
+        channels: {
+          create: {
+            name: "general",
+          },
+        },
+      },
+      include: {
+        members: {
+          include: { user: true },
+        },
+        channels: true,
       },
     });
 
@@ -144,6 +155,48 @@ export const getUserController: RequestHandler = async (
 
     // Retorna as equipes
     res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// PROCURAR UMA UNICA EQUIPE
+export const getTeamController: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized: no userId" });
+      return;
+    }
+
+    const { teamId } = req.params;
+
+    const team = await prismaClient.team.findUnique({
+      where: {
+        id: Number(teamId),
+      },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+          orderBy: {
+            role: "asc",
+          },
+        },
+        channels: {
+          orderBy: { createdAt: "asc" },
+        },
+      },
+    });
+
+    // Retorna as equipes
+    res.status(200).json({ team });
   } catch (error) {
     next(error);
   }

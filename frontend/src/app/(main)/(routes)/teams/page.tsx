@@ -1,7 +1,7 @@
 "use client";
 
-import Card from "./components/TeamCard";
-import { TeamType } from "../../../types/teamType";
+import TeamCard from "../../../../components/main/teams/TeamCard";
+import { TeamType } from "../../../../types/teamType";
 import { useEffect, useState } from "react";
 import { getTeams } from "@/api/userRequest";
 import CreateServerButton from "@/components/main/teams/CreateSeverButton";
@@ -54,7 +54,7 @@ export default function TeamsPage() {
           <div className="scroll grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 p-4 ">
             {teams.map((team) => (
               <div key={team.id} className="flex justify-center">
-                <Card team={team} />
+                <TeamCard team={team} />
               </div>
             ))}
           </div>

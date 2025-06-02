@@ -8,3 +8,9 @@ export const createTeamAPI = async (name: string, description: string) => {
 
   return res.data;
 };
+
+export const getTeamApi = async (teamId: string) => {
+  const res = await api.get(`user/team/${teamId}`);
+
+  return res.data;
+};

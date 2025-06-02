@@ -1,7 +1,6 @@
 // import { cookies } from "next/headers";
 import Cookies from "js-cookie";
 import api from "./indexRequest";
-import { redirect } from "next/dist/server/api-utils";
 
 export const loginAPI = async (email: string, password: string) => {
   const res = await api.post("/auth/signIn", { email, password });

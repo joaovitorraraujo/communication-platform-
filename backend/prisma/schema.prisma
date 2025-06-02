@@ -26,6 +26,7 @@ model User {
   type        UserType  // PF ou PJ
 
   teams       TeamMember[]
+  messages  Message[]
 
   @@map("users")
 }
@@ -38,6 +39,7 @@ model Team {
 
 
   members     TeamMember[]
+  channels    Channel[]
   
   @@map("teams")
 }
@@ -47,11 +49,10 @@ model TeamMember {
   userId  Int
   teamId  Int
 
-  user    User   @relation(fields: [userId], references: [id])
-  team    Team   @relation(fields: [teamId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team    Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
-  role    UserRole // exemplo: "owner", "member"
-
+  role    UserRole 
   @@unique([userId, teamId]) // não deixar o mesmo user entrar 2x no mesmo time
   @@map("team_members")
 }
@@ -66,7 +67,9 @@ model Address {
   complement  String?
   country     String
 
-  user        User?
+  
+  user        User? 
+
   
   @@map("addresses")
 }
@@ -80,4 +83,36 @@ enum UserRole {
   OWNER
   ADMIN
   MEMBER
+}
+
+model Channel {
+  id          Int       @id @default(autoincrement())
+  name        String
+  teamId      Int
+
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("channels")
+}
+
+model Message {
+  id          Int       @id @default(autoincrement())
+  content     String @db.Text
+
+  fileUrl     String? @db.Text
+
+  channelId   Int
+  userId      Int
+
+  channel     Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("messages")
 }
