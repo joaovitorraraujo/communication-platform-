@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../../app/globals.css";
 import TitleBar from "../../components/layout/TitleBar";
 import Sidebar from "../../components/layout/Sidebar";
+import ModalsProvider from "@/components/providers/modal-provider";
 
 export const metadata: Metadata = {
   title: "CPP",
@@ -20,7 +21,10 @@ export default function PagesLayout({
           <TitleBar />
           <div className="flex flex-1 overflow-hidden">
             <Sidebar />
-            <main className="flex-1 overflow-auto p-2">{children}</main>
+            <main className="flex-1 overflow-auto p-2">
+              {children}
+              <ModalsProvider />
+            </main>
           </div>
         </div>
       </body>

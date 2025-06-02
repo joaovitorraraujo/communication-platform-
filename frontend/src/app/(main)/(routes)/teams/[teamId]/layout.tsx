@@ -10,7 +10,7 @@ const TeamLayout = async ({
   const { teamId } = await params;
 
   return (
-    <div className="bg-zinc-900 w-full min-h-screen flex">
+    <div className="bg-zinc-900 w-full min-h-screen flex rounded-2xl">
       {/* Sidebar dos canais */}
 
       <TeamSideBar teamId={teamId} />

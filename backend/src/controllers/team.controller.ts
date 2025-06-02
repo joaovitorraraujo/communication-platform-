@@ -63,10 +63,23 @@ export const joinTeamByCodeController: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { code, userId } = req.body;
+    const userId = req.userId;
+
+    const user = await prismaClient.user.findFirst({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      res.status(401).json({ message: "Unauthorized: no userId" });
+      return;
+    }
+    const { code } = req.body;
 
     const team = await prismaClient.team.findUnique({
       where: { code },
+      select: {
+        id: true,
+      },
     });
 
     if (!team) {
@@ -77,25 +90,22 @@ export const joinTeamByCodeController: RequestHandler = async (
     // checar se o usuário já faz parte
     const existingMember = await prismaClient.teamMember.findFirst({
       where: {
-        userId,
+        userId: user!.id,
         teamId: team.id,
       },
     });
 
-    if (existingMember) {
-      res.status(400).json({ message: "User already in team" });
-      return;
+    if (!existingMember) {
+      await prismaClient.teamMember.create({
+        data: {
+          userId: user!.id,
+          teamId: team.id,
+          role: UserRole.MEMBER,
+        },
+      });
     }
 
-    await prismaClient.teamMember.create({
-      data: {
-        userId,
-        teamId: team.id,
-        role: "MEMBER",
-      },
-    });
-
-    res.status(200).json({ message: "Joined team successfully" });
+    res.status(200).json({ team });
   } catch (error) {
     next(error);
   }
@@ -147,7 +157,7 @@ export const getUserController: RequestHandler = async (
       return;
     }
 
-    const user = await prismaClient.user.findMany({
+    const user = await prismaClient.user.findFirst({
       where: {
         id: Number(userId),
       },

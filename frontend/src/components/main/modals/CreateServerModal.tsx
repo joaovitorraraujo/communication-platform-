@@ -23,57 +23,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createTeamAPI } from "@/api/teamRequest";
+import { useModal } from "@/hooks/useModal"; // ajuste para o caminho correto
 
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required",
   }),
   description: z.string(),
-  //   imageUrl: z.string().min(1, {
-  //     message: "Server image is required",
-  //   }),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-interface CreateServerModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export function CreateServerModal({
-  open,
-  onOpenChange,
-}: CreateServerModalProps) {
+export function CreateServerModal() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       description: "",
-      //   imageUrl: "",
     },
   });
 
   const isLoading = form.formState.isSubmitting;
 
+  const { isOpen, onClose, type } = useModal();
+
+  const isModalOpen = isOpen && type === "createServer";
+
   const onSubmit = async (data: FormData) => {
     try {
       await createTeamAPI(data.name, data.description);
-      onOpenChange(false);
+      onClose(); // fecha o modal pelo hook
       form.reset();
       window.location.reload();
     } catch (error) {
       console.log(error);
     }
-    console.log(data);
+  };
+
+  const handleClose = () => {
+    onClose();
+    form.reset();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px] bg-zinc-800 shadow-2xl text-white border-0">
         <DialogHeader>
           <DialogTitle>Details about your team</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-zinc-300/70">
             Give your team a personality with a name and an image. You can
             always change it later.
           </DialogDescription>

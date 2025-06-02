@@ -8,13 +8,11 @@ import {
 
 import { cn } from "@/lib/utils";
 
-import { LucidePlusSquare } from "lucide-react";
-import { CreateServerModal } from "../modals/CreateServerModal";
-
-import { useState } from "react";
+import { LogIn, LucidePlusSquare, PlusCircle } from "lucide-react";
+import { useModal } from "@/hooks/useModal";
 
 export default function CreateServerButton() {
-  const [open, setOpen] = useState(false);
+  const { onOpen } = useModal();
 
   return (
     <>
@@ -29,20 +27,23 @@ export default function CreateServerButton() {
           align="end"
           className={cn("bg-zinc-800 text-white border-0 shadow-2xl ")}
         >
-          <DropdownMenuItem className="data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white">
+          <DropdownMenuItem
+            className="data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white"
+            onSelect={() => onOpen("join")}
+          >
             Join a team
+            <LogIn className="w-4 h-4 ml-auto" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="data-[highlighted]:bg-zinc-700 data-[highlighted]:text-white"
-            onSelect={() => setOpen(true)}
+            onSelect={() => onOpen("createServer")}
           >
             Create a team
+            <PlusCircle className="w-4 h-4 ml-auto" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <CreateServerModal open={open} onOpenChange={setOpen} />
     </>
   );
 }

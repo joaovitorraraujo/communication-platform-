@@ -19,14 +19,17 @@ import {
   LogOutIcon,
 } from "lucide-react";
 import NavItem from "./NavItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { signOutAPI } from "../../api/authRequest";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { getMyUser } from "@/api/userRequest";
+import { UserType } from "@/types/teamType";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [userAuth, setUserAuth] = useState<UserType>();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -34,6 +37,19 @@ export default function NavBar() {
 
     router.push("/login");
   };
+
+  useEffect(() => {
+    const joinTeam = async () => {
+      try {
+        const res = await getMyUser();
+        setUserAuth(res.user);
+      } catch (error: any) {
+        console.error("Erro ao entrar na equipe:", error);
+      }
+    };
+
+    joinTeam();
+  }, []);
 
   return (
     <aside
@@ -63,7 +79,7 @@ export default function NavBar() {
               <DropdownMenuTrigger className={cn("w-full")}>
                 <NavItem
                   icon={UserCircle2Icon}
-                  label="Profile"
+                  label={userAuth?.name || "Profile"}
                   isOpen={isOpen}
                 />
               </DropdownMenuTrigger>

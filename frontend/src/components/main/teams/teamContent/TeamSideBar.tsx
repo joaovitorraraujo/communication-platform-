@@ -1,8 +1,10 @@
 "use client";
 
 import { getTeamApi } from "@/api/teamRequest";
-import { TeamType } from "@/types/teamType";
+import { TeamType, UserType } from "@/types/teamType";
 import { useEffect, useState } from "react";
+import { HeaderSideBar } from "@/components/main/teams/teamContent/HeaderSideBar";
+import { getMyUser } from "@/api/userRequest";
 
 interface TeamSideBarProps {
   teamId: string;
@@ -10,12 +12,16 @@ interface TeamSideBarProps {
 
 export const TeamSideBar = ({ teamId }: TeamSideBarProps) => {
   const [team, setTeam] = useState<TeamType>();
+  const [userAuth, setUserAuth] = useState<UserType>();
 
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const data = await getTeamApi(teamId);
-        setTeam(data.team);
+        const dataUser = await getMyUser();
+        setUserAuth(dataUser.user);
+
+        const dataTeam = await getTeamApi(teamId);
+        setTeam(dataTeam.team);
       } catch (error) {
         console.error("Erro ao buscar time:", error);
       }
@@ -26,14 +32,22 @@ export const TeamSideBar = ({ teamId }: TeamSideBarProps) => {
 
   if (!team) return <p>Carregando...</p>;
 
+  const members = team.members.filter(
+    (member: any) => member.userId !== userAuth!.id
+  );
+
+  const role = team.members.find(
+    (member: any) => member.userId === userAuth!.id
+  )?.role;
+
+  if (!role) {
+    throw new Error("Usuário não faz parte do time");
+  }
+
   return (
     <>
       <aside className="hidden md:block w-64 border-r border-zinc-800 p-4">
-        <h2 className="text-lg font-bold mb-2">{team.name}</h2>
-        {team.channels.map((channel: any) => (
-          <p key={channel.id}>{channel.name}</p>
-        ))}
-        <p className="text-blue-500 mt-4 cursor-pointer">+ Add Channel</p>
+        <HeaderSideBar team={team} role={role} />
       </aside>
     </>
   );

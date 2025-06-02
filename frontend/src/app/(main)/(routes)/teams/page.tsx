@@ -3,7 +3,7 @@
 import TeamCard from "../../../../components/main/teams/TeamCard";
 import { TeamType } from "../../../../types/teamType";
 import { useEffect, useState } from "react";
-import { getTeams } from "@/api/userRequest";
+import { getTeams } from "@/api/teamRequest";
 import CreateServerButton from "@/components/main/teams/CreateSeverButton";
 
 export default function TeamsPage() {
